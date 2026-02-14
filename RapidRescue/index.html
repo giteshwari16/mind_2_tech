@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RapidRescue - Emergency Response Platform</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- TOP NAVIGATION BAR -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo" onclick="navigateTo('home-screen')">
+                <i class="fas fa-heartbeat"></i> RapidRescue
+            </div>
+            <ul class="nav-links">
+                <li><a href="#" onclick="navigateTo('home-screen')" class="active" id="nav-home">Home</a></li>
+                <li><a href="#" onclick="navigateTo('hospital-screen')" id="nav-hospitals">Hospitals</a></li>
+                <li><a href="#" onclick="navigateTo('help-screen')" id="nav-help">Nearby Help</a></li>
+                <li><a href="#" onclick="navigateTo('tracking-screen')" id="nav-track">Live Tracking</a></li>
+            </ul>
+            <div class="user-profile" onclick="navigateTo('profile-screen')">
+                <img src="https://ui-avatars.com/api/?name=John+Doe&background=0D8ABC&color=fff" alt="Profile">
+                <span>John Doe</span>
+            </div>
+            <div class="mobile-menu-toggle"><i class="fas fa-bars"></i></div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="main-content">
+
+        <!-- ==================== HOME DASHBOARD ==================== -->
+        <section id="home-screen" class="screen active fade-in">
+            <div class="dashboard-grid">
+                <!-- SOS Hero Section -->
+                <div class="sos-hero-card">
+                    <div class="sos-content">
+                        <h2>Emergency Assistance</h2>
+                        <p>Press the button below to instantly alert nearby ambulances and hospitals.</p>
+                        <div class="sos-wrapper">
+                            <button class="sos-btn" id="sos-btn" onclick="activateEmergency()">
+                                <span>SOS</span>
+                                <div class="pulse-ring"></div>
+                                <div class="pulse-ring delayed"></div>
+                            </button>
+                        </div>
+                        <p class="sos-hint">One-tap activation</p>
+                    </div>
+                </div>
+
+                <!-- Right Column: Location & Quick Actions -->
+                <div class="dashboard-sidebar">
+                    <div class="location-card">
+                        <div class="location-header">
+                            <i class="fas fa-map-marker-alt location-icon"></i>
+                            <div>
+                                <span class="location-label">Current Location</span>
+                                <h3 class="location-address">123, MG Road, Indiranagar, Bangalore</h3>
+                            </div>
+                        </div>
+                        <div class="mini-map-placeholder"></div>
+                    </div>
+
+                    <div class="quick-actions-grid">
+                        <button class="action-card red" onclick="activateEmergency('ambulance')">
+                            <i class="fas fa-ambulance"></i>
+                            <span>Call Ambulance</span>
+                        </button>
+                        <button class="action-card blue" onclick="navigateTo('hospital-screen')">
+                            <i class="fas fa-hospital"></i>
+                            <span>Find Hospital</span>
+                        </button>
+                        <button class="action-card green" onclick="navigateTo('help-screen')">
+                            <i class="fas fa-hands-helping"></i>
+                            <span>Nearby Help</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ==================== EMERGENCY ACTIVATED SCREEN ==================== -->
+        <section id="emergency-screen" class="screen fade-in">
+            <div class="emergency-container">
+                <div class="emergency-header-large">
+                    <h1><i class="fas fa-exclamation-circle"></i> Emergency Activated</h1>
+                    <p>Help is on the way! Identifying nearest units...</p>
+                </div>
+
+                <div class="emergency-content-grid">
+                    <div class="map-placeholder large-map" id="emergency-map">
+                        <!-- GOOGLE MAPS EMBED -->
+                        <iframe width="100%" height="100%" frameborder="0"
+                            style="border:0; filter: grayscale(20%) invert(0%);"
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15552.016335940027!2d77.63467405!3d12.9715987!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae16a6c9688df1%3A0x2802422791746200!2sIndiranagar%2C%20Bengaluru%2C%20Karnataka!5e0!3m2!1sen!2sin!4v1683050000000!5m2!1sen!2sin"
+                            allowfullscreen>
+                        </iframe>
+                        <div class="map-overlay-text"
+                            style="background: rgba(255, 46, 46, 0.9); padding: 10px 20px; border-radius: 30px; color: white; display: none;">
+                            Locating nearest units...</div>
+                    </div>
+
+                    <div class="status-sidebar">
+                        <div class="status-step active">
+                            <div class="step-icon">
+                                <div class="loader-spinner"></div>
+                            </div>
+                            <div class="step-info">
+                                <h3>Contacting Ambulance</h3>
+                                <p>Searching for nearby units...</p>
+                            </div>
+                        </div>
+                        <div class="status-step">
+                            <div class="step-icon"><i class="fas fa-hospital"></i></div>
+                            <div class="step-info">
+                                <h3>Alerting Hospitals</h3>
+                                <p>Sending data to City General...</p>
+                            </div>
+                        </div>
+
+                        <button class="cancel-btn-large" onclick="navigateTo('home-screen')">Cancel Emergency</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ==================== NEARBY HELP SCREEN ==================== -->
+        <section id="help-screen" class="screen fade-in">
+            <header class="section-header">
+                <h2>Nearby Volunteers & Help</h2>
+                <div class="filter-tabs">
+                    <button class="tab active">All</button>
+                    <button class="tab">Volunteers</button>
+                    <button class="tab">Vehicles</button>
+                </div>
+            </header>
+
+            <div class="grid-list-container" id="helpers-list">
+                <!-- Populated by JS -->
+            </div>
+        </section>
+
+
+        <!-- ==================== HOSPITAL SCREEN ==================== -->
+        <section id="hospital-screen" class="screen fade-in">
+            <header class="section-header">
+                <h2>Nearby Hospitals</h2>
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search hospitals...">
+                </div>
+            </header>
+
+            <div class="grid-list-container" id="hospitals-list">
+                <!-- Populated by JS -->
+            </div>
+        </section>
+
+
+        <!-- ==================== TRACKING SCREEN ==================== -->
+        <section id="tracking-screen" class="screen fade-in">
+            <div class="tracking-layout">
+                <div class="map-placeholder full-map tracking-map">
+                    <!-- GOOGLE MAPS EMBED -->
+                    <iframe width="100%" height="100%" frameborder="0" style="border:0;"
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3887.9754123565257!2d77.63852891482205!3d12.97341389085465!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae16a73f1d8d9b%3A0x6b808365449d033f!2sManipal%20Hospital%20Old%20Airport%20Road!5e0!3m2!1sen!2sin!4v1683050100000!5m2!1sen!2sin"
+                        allowfullscreen>
+                    </iframe>
+
+                    <div class="floating-eta-card">
+                        <span class="eta-time">5 mins</span>
+                        <span class="eta-label">Arrival Time</span>
+                    </div>
+                </div>
+
+                <div class="driver-sidebar">
+                    <header class="driver-header">
+                        <h3>En Route</h3>
+                        <span class="live-badge">LIVE</span>
+                    </header>
+
+                    <div class="driver-profile-info">
+                        <img src="https://ui-avatars.com/api/?name=Ramesh+K" class="driver-avatar-large">
+                        <div>
+                            <h2>Ramesh Kumar</h2>
+                            <p>Ambulance • KA 01 AB 1234</p>
+                            <div class="rating-pill"><i class="fas fa-star"></i> 4.9 (120 reviews)</div>
+                        </div>
+                    </div>
+
+                    <div class="trip-timeline">
+                        <div class="timeline-item completed">
+                            <div class="dot"></div>
+                            <p>Request Accepted - 4:15 PM</p>
+                        </div>
+                        <div class="timeline-item active">
+                            <div class="dot"></div>
+                            <p>Ambulance Dispatched - 4:16 PM</p>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="dot"></div>
+                            <p>Arrival at Location (~5 mins)</p>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons-row">
+                        <button class="call-btn"><i class="fas fa-phone-alt"></i> Call Driver</button>
+                        <button class="msg-btn"><i class="fas fa-comment-alt"></i> Message</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== PROFILE SCREEN ==================== -->
+        <section id="profile-screen" class="screen fade-in">
+            <div class="profile-layout">
+                <div class="profile-sidebar-card">
+                    <img src="https://ui-avatars.com/api/?name=John+Doe&background=0D8ABC&color=fff&size=200"
+                        alt="Profile">
+                    <h2>John Doe</h2>
+                    <p class="blood-group-badge">Blood Group: <strong>O+</strong></p>
+                    <button class="edit-btn">Edit Profile</button>
+                </div>
+
+                <div class="profile-details-grid">
+                    <div class="info-card">
+                        <h4><i class="fas fa-phone"></i> Emergency Contacts</h4>
+                        <div class="contact-item">
+                            <p><strong>Jane Doe (Wife)</strong></p>
+                            <p>+91 98765 43210</p>
+                        </div>
+                        <div class="contact-item">
+                            <p><strong>Dr. Smith (Physician)</strong></p>
+                            <p>+91 99887 76655</p>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <h4><i class="fas fa-notes-medical"></i> Medical Conditions</h4>
+                        <ul class="medical-list">
+                            <li>Asthma (Moderate)</li>
+                            <li>Penicillin Allergy</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <h4><i class="fas fa-pills"></i> Current Medications</h4>
+                        <ul class="medical-list">
+                            <li>Flovent Inhaler (Daily)</li>
+                            <li>Multivitamins</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
