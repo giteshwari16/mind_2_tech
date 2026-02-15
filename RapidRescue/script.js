@@ -54,48 +54,75 @@ function updateTopNav(screenId) {
 }
 
 // Emergency Activation Logic
-function activateEmergency(type = 'general') {
+async function activateEmergency(type = 'medical') {
     const sosBtn = document.getElementById('sos-btn');
 
     // Animation feedback
     sosBtn.style.transform = 'scale(0.9)';
-    setTimeout(() => {
-        sosBtn.style.transform = 'scale(1)';
+    
+    try {
+        // Show loading state
         navigateTo('emergency-screen');
-
-        // Simulate "Contacting..." delay then switch to tracking
+        
+        // Get emergency details from user (in real app, show modal)
+        const description = prompt('Please describe the emergency:') || 'Emergency assistance needed';
+        const contactPhone = prompt('Your contact number:') || '555-0123';
+        
+        // Activate emergency via API
+        const response = await EmergencyService.activateEmergency(type, description, contactPhone);
+        
+        // Reset button
+        sosBtn.style.transform = 'scale(1)';
+        
+        // Show success and navigate to tracking
         setTimeout(() => {
-            // alert("Ambulance Dispatched! Switching to Live Tracking."); // Removed alert for smoother flow
             navigateTo('tracking-screen');
-        }, 3000);
-
-    }, 200);
+        }, 2000);
+        
+    } catch (error) {
+        console.error('Emergency activation failed:', error);
+        sosBtn.style.transform = 'scale(1)';
+        alert('Failed to activate emergency. Please try again or call emergency services directly.');
+        
+        // Fallback to original behavior
+        setTimeout(() => {
+            navigateTo('tracking-screen');
+        }, 1000);
+    }
 }
 
 // Data Loading Functions (Updated card styles for Grid)
-function loadHospitals() {
+async function loadHospitals() {
     const listInfo = document.getElementById('hospitals-list');
-    listInfo.innerHTML = ''; // Clear previous
+    listInfo.innerHTML = '<div class="loading">Loading nearby hospitals...</div>';
 
-    hospitals.forEach(hospital => {
-        const card = `
-            <div class="list-card" onclick="navigateTo('tracking-screen')">
-                 <div style="width: 60px; height: 60px; background: #e3f2fd; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #2962FF;">
-                    <i class="fas fa-hospital-alt"></i>
-                </div>
-                <div class="card-info" style="flex:1">
-                    <h3>${hospital.name}</h3>
-                    <p style="color: #666">${hospital.type}</p>
-                    <div style="margin-top: 5px; display: flex; gap: 10px; font-size: 0.85rem; color: #888;">
-                         <span><i class="fas fa-map-marker-alt"></i> ${hospital.distance}</span>
-                         <span style="color: #00C853; font-weight:600"><i class="fas fa-bolt"></i> ${hospital.time}</span>
+    try {
+        const hospitals = await HospitalService.loadNearbyHospitals();
+        listInfo.innerHTML = ''; // Clear loading message
+
+        hospitals.forEach(hospital => {
+            const card = `
+                <div class="list-card" onclick="navigateTo('tracking-screen')">
+                     <div style="width: 60px; height: 60px; background: #e3f2fd; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #2962FF;">
+                        <i class="fas fa-hospital-alt"></i>
                     </div>
+                    <div class="card-info" style="flex:1">
+                        <h3>${hospital.name}</h3>
+                        <p style="color: #666">${hospital.hospital_type || 'General'}</p>
+                        <div style="margin-top: 5px; display: flex; gap: 10px; font-size: 0.85rem; color: #888;">
+                             <span><i class="fas fa-map-marker-alt"></i> ${hospital.distance || 'Unknown'}</span>
+                             <span style="color: #00C853; font-weight:600"><i class="fas fa-phone"></i> ${hospital.phone || 'Contact'}</span>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-right" style="color: #ccc"></i>
                 </div>
-                <i class="fas fa-chevron-right" style="color: #ccc"></i>
-            </div>
-        `;
-        listInfo.innerHTML += card;
-    });
+            `;
+            listInfo.innerHTML += card;
+        });
+    } catch (error) {
+        console.error('Failed to load hospitals:', error);
+        listInfo.innerHTML = '<div class="error">Failed to load hospitals. Please try again.</div>';
+    }
 }
 
 function loadHelpers() {
